@@ -8,17 +8,17 @@ public class DisjointSet<T> where T : IEquatable<T> {
         _parents[cell] = cell;
     }
     
-    public T Find( T cell) {
+    public T FindParent( T cell) {
         if (_parents[cell].Equals( cell)) {
             return cell;
         }
 
-        return _parents[cell] = Find(_parents[cell]);
+        return _parents[cell] = FindParent(_parents[cell]);
     }
     
     public void Union( T cell1, T cell2) {
-        var p1 = Find(cell1);
-        var p2 = Find(cell2);
+        var p1 = FindParent(cell1);
+        var p2 = FindParent(cell2);
         if (p1.Equals(p2)) {
             return;
         }

@@ -20,16 +20,11 @@ public static class Grid
         }
         return count;
     }
-    public static int CountCell<T>(this T[][] grid, Predicate<T> predicate){
+    public static void Print(this char[][] grid){
         int count = 0;
         foreach(var row in grid) {
-            foreach(var cell in row) {
-                if( predicate(cell)) {
-                    count++;
-                }
-            }
+            Console.WriteLine(new string(row));
         }
-        return count;
     }
     
     public static bool GoRight<T>(this T[][] grid, int i, ref int j) {
