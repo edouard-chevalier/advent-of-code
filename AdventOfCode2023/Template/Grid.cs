@@ -9,6 +9,17 @@ public static class Grid
         return i>=0 && i<grid.Length && j>=0 && j<grid[0].Length;
     }
     
+    public static (int i, int j) FindCell<T>(this T[][] grid, T c) where T : IEquatable<T>{
+        for(int i = 0; i < grid.Length; i++) {
+            for(int j = 0; j < grid[0].Length; j++) {
+                if( grid[i][j].Equals(c)) {
+                    return (i, j);
+                }
+            }
+        }
+        return (-1, -1);
+    }
+    
     public static int CountCell(this char[][] grid, char c) {
         int count = 0;
         foreach(var row in grid) {
