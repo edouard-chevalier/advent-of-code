@@ -5,6 +5,81 @@
 /// </summary>
 public static class Grid
 {
+    public enum Direction {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
+
+    public class Pointer {
+        public char[][] Grid { get; private set; }
+        public int I ;
+        public int J ;
+        public Direction Direction { get; private set; }
+        public Pointer(char[][] grid, int i, int j,  Direction direction = Direction.Up)
+        {
+            Grid = grid;
+            I = i;
+            J = j;
+        }
+        public void TurnRight() {
+            Direction = Direction switch {
+                Direction.Up => Direction.Right,
+                Direction.Right => Direction.Down,
+                Direction.Down => Direction.Left,
+                Direction.Left => Direction.Up,
+                _ => throw new ArgumentOutOfRangeException() 
+            };
+        }
+        
+        public bool CanMove() {
+            switch (Direction) {
+                case Direction.Up:
+                    return Grid.HasCell(I - 1, J);
+                case Direction.Down:
+                    return Grid.HasCell(I + 1, J);
+                case Direction.Left:
+                    return Grid.HasCell(I, J - 1);
+                case Direction.Right:
+                    return Grid.HasCell(I, J + 1);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public char NextCell() {
+            switch (Direction) {
+                case Direction.Up:
+                    return Grid[I - 1][J];
+                case Direction.Down:
+                    return Grid[I + 1][J];
+                case Direction.Left:
+                    return Grid[I][J - 1];
+                case Direction.Right:
+                    return Grid[I][J + 1];
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public bool Move() {
+            switch (Direction) {
+                case Direction.Up:
+                    return Grid.GoUp(ref I, J);
+                case Direction.Down:
+                    return Grid.GoDown(ref I, J);
+                case Direction.Left:
+                    return Grid.GoLeft(I, ref J);
+                case Direction.Right:
+                    return Grid.GoRight(I, ref J);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+    }
     public static bool HasCell<T>(this T[][] grid, int i, int j) {
         return i>=0 && i<grid.Length && j>=0 && j<grid[0].Length;
     }
@@ -46,6 +121,7 @@ public static class Grid
 
         return false;
     }
+    
     public static bool GoLeft<T>(this T[][] grid, int i, ref int j) {
         if( grid.HasCell(i, j - 1)) {
             j--;
