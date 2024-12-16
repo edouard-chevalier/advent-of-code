@@ -11,6 +11,35 @@ public static class Grid
         Left,
         Right
     }
+    
+    public static Direction Turn90ClockWise( this Direction direction) {
+        return direction switch {
+            Direction.Up => Direction.Right,
+            Direction.Right => Direction.Down,
+            Direction.Down => Direction.Left,
+            Direction.Left => Direction.Up,
+            _ => throw new ArgumentOutOfRangeException() 
+        };
+    }
+    public static Direction Turn90CounterClockWise( this Direction direction) {
+        return direction switch {
+            Direction.Up => Direction.Left,
+            Direction.Left => Direction.Down,
+            Direction.Down => Direction.Right,
+            Direction.Right => Direction.Up,
+            _ => throw new ArgumentOutOfRangeException() 
+        };
+    }
+    
+    public static Direction Turn180( this Direction direction) {
+        return direction switch {
+            Direction.Up => Direction.Down,
+            Direction.Down => Direction.Up,
+            Direction.Left => Direction.Right,
+            Direction.Right => Direction.Left,
+            _ => throw new ArgumentOutOfRangeException() 
+        };
+    }
 
 
     public class Pointer {

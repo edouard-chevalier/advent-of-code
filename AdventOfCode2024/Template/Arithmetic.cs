@@ -2,6 +2,7 @@
 
 public class Arithmetic {
     
+    
     /// <summary>
     /// Plus grand denominateur commun
     /// </summary>
