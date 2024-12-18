@@ -1354,4 +1354,67 @@ void Part1(string input) {
 
 }
 
-Part1(inputReal);
+
+void Part2(string input) {
+    var lines = input.Split(Environment.NewLine);
+    var buttonsA = new List<(long x, long y)>();
+    var buttonsB = new List<(long x, long y)>();
+    var prizes = new List<(long x, long y)>();
+    
+    foreach (var line in lines) {
+        var matchA = regexA.Match(line);
+        var matchB = regexB.Match(line);
+        var matchPrize = regexPrize.Match(line);
+        
+        if (matchA.Success) {
+            buttonsA.Add((long.Parse(matchA.Groups["x"].Value), long.Parse(matchA.Groups["y"].Value)));
+        }
+        
+        if (matchB.Success) {
+            buttonsB.Add((long.Parse(matchB.Groups["x"].Value), long.Parse(matchB.Groups["y"].Value)));
+        }
+        
+        if (matchPrize.Success) {
+            prizes.Add((long.Parse(matchPrize.Groups["x"].Value), long.Parse(matchPrize.Groups["y"].Value)));
+        }
+    }
+
+    long scoreSum = 0;
+    for (int machine = 0; machine < prizes.Count; machine++) {
+        var offset = 10000000000000;
+        //var offset = 0;
+        var prize = ( prizes[machine].x + offset, prizes[machine].y + offset);
+       if( TrySolve(buttonsA[machine].x, buttonsB[machine].x,  -prize.Item1, buttonsA[machine].y, buttonsB[machine].y, -prize.Item2, out long minA, out long minB)) {
+            var score = 3 * minA + minB;
+            Console.WriteLine($"Prize {machine}: X={prize.Item1}, Y={prize.Item2} => #A {minA} #B { minB}  {score}");
+           
+                scoreSum += score;
+        }
+    }        
+    Console.WriteLine($"Score: {scoreSum}");
+
+}
+
+bool TrySolve( long a1, long b1, long c1, long a2, long b2, long c2, out long x, out long y) {
+    x = 0;
+    y = 0;
+    long det = a1 * b2 - a2 * b1;
+    if (det == 0) {
+        return false;
+    }
+
+    var nx = (c2 * b1 - c1 * b2 );
+    if( nx % det != 0) {
+        return false;
+    }
+    x = nx / det;
+    var ny = ( a2 * c1 -a1 * c2 );
+    if( ny % det != 0) {
+        return false;
+    }
+    y = ny / det;
+    return true;
+}
+
+
+Part2(inputReal);
