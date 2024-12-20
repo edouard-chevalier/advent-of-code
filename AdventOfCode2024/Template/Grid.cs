@@ -40,6 +40,15 @@ public static class Grid
             _ => throw new ArgumentOutOfRangeException() 
         };
     }
+    
+    public record struct Position {
+        public int I;
+        public int J;
+        public Position(int i, int j) {
+            I = i;
+            J = j;
+        }
+    }
 
 
     public class Pointer {
@@ -113,6 +122,10 @@ public static class Grid
         return i>=0 && i<grid.Length && j>=0 && j<grid[0].Length;
     }
     
+    public static T GetCell<T>(this T[][] grid, Position pos) {
+        return grid[pos.I][pos.J];
+    }
+    
     public static (int i, int j) FindCell<T>(this T[][] grid, T c) where T : IEquatable<T>{
         for(int i = 0; i < grid.Length; i++) {
             for(int j = 0; j < grid[0].Length; j++) {
@@ -122,6 +135,15 @@ public static class Grid
             }
         }
         return (-1, -1);
+    }
+    public static bool TryFindCell<T>(this T[][] grid, T c, out Position pos) where T : IEquatable<T>{
+        var result = FindCell(grid, c);
+        if( result == (-1, -1)) {
+            pos = default;
+            return false;
+        }
+        pos = new Position(result.i, result.j);
+        return true;
     }
     
     public static int CountCell(this char[][] grid, char c) {
@@ -150,6 +172,12 @@ public static class Grid
 
         return false;
     }
+    public static bool TryGoRight<T>(this T[][] grid, Position pos, out Position newPosition ) {
+        newPosition = pos;
+        if (!grid.HasCell(pos.I, pos.J + 1)) return false;
+        newPosition = new Position(pos.I, pos.J + 1);
+        return true;
+    }
     
     public static bool GoLeft<T>(this T[][] grid, int i, ref int j) {
         if( grid.HasCell(i, j - 1)) {
@@ -159,6 +187,14 @@ public static class Grid
 
         return false;
     }
+    
+    public static bool TryGoLeft<T>(this T[][] grid, Position pos, out Position newPosition ) {
+        newPosition = pos;
+        if (!grid.HasCell(pos.I, pos.J - 1)) return false;
+        newPosition = new Position(pos.I, pos.J - 1);
+        return true;
+    }
+    
     public static bool GoUp<T>(this T[][] grid, ref int i, int j) {
         if( grid.HasCell(i - 1, j)) {
             i--;
@@ -167,6 +203,14 @@ public static class Grid
 
         return false;
     }
+    
+    public static bool TryGoUp<T>(this T[][] grid, Position pos, out Position newPosition ) {
+        newPosition = pos;
+        if (!grid.HasCell(pos.I - 1, pos.J)) return false;
+        newPosition = new Position(pos.I - 1, pos.J);
+        return true;
+    }
+    
     public static bool GoDown<T>(this T[][] grid, ref int i, int j) {
         if( grid.HasCell(i + 1, j)) {
             i++;
@@ -174,5 +218,26 @@ public static class Grid
         }
 
         return false;
+    }
+    
+    public static bool TryGoDown<T>(this T[][] grid, Position pos, out Position newPosition ) {
+        newPosition = pos;
+        if (!grid.HasCell(pos.I + 1, pos.J)) return false;
+        newPosition = new Position(pos.I + 1, pos.J);
+        return true;
+    }
+    public static IEnumerable<Position> Neighbors<T>(this T[][] grid, Position pos) {
+        if( grid.TryGoRight(pos, out var right) ) {
+            yield return right;
+        }
+        if( grid.TryGoDown(pos, out var down) ) {
+            yield return down;
+        }
+        if( grid.TryGoLeft(pos, out var left) ) {
+            yield return left;
+        }
+        if( grid.TryGoUp(pos, out var up) ) {
+            yield return up;
+        }
     }
 }
