@@ -1,4 +1,6 @@
-﻿namespace Template;
+﻿using System.Text;
+
+namespace Template;
 
 /// <summary>
 /// Helper for grids
@@ -121,6 +123,15 @@ public static class Grid
     public static bool HasCell<T>(this T[][] grid, int i, int j) {
         return i>=0 && i<grid.Length && j>=0 && j<grid[0].Length;
     }
+
+    public static bool TrySetCell<T>(this T[][] grid, int i, int j, T newVal ) {
+        if (HasCell(grid, i, j)) {
+            grid[i][j] = newVal;
+            return true;
+        }
+
+        return false;
+    }
     
     public static T GetCell<T>(this T[][] grid, Position pos) {
         return grid[pos.I][pos.J];
@@ -157,11 +168,21 @@ public static class Grid
         }
         return count;
     }
-    public static void Print(this char[][] grid){
-        int count = 0;
-        foreach(var row in grid) {
-            Console.WriteLine(new string(row));
+    public static void PrintConsole(this char[][] grid){
+        Console.WriteLine(grid.Print());
+    }
+    public static string Print(this char[][] grid) {
+        var b = new StringBuilder();
+        foreach (var row in grid) {
+            b.Append(row);
+            b.AppendLine();
         }
+
+        return b.ToString();
+    }
+    
+    public static string Print(this char[][] grid, int line){
+           return new string(grid[line]);
     }
     
     public static bool GoRight<T>(this T[][] grid, int i, ref int j) {
